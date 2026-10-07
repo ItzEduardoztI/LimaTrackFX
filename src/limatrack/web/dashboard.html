@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LimaTrack — Panel Operador</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root {
+  --bg:  #0d0f14;
+  --bg2: #13161e;
+  --bg3: #1a1e29;
+  --bg4: #222636;
+  --b:   rgba(255,255,255,0.07);
+  --b2:  rgba(255,255,255,0.13);
+  --t:   #e8eaf0;
+  --t2:  #8b90a0;
+  --t3:  #4e5364;
+  --blue:   #3d8ef0;
+  --blue-s: rgba(61,142,240,0.13);
+  --blue-b: rgba(61,142,240,0.28);
+  --green:  #2ec98a;
+  --green-s:rgba(46,201,138,0.12);
+  --green-b:rgba(46,201,138,0.28);
+  --amber:  #f5a623;
+  --amber-s:rgba(245,166,35,0.12);
+  --amber-b:rgba(245,166,35,0.28);
+  --red:    #f04f4f;
+  --red-s:  rgba(240,79,79,0.12);
+  --red-b:  rgba(240,79,79,0.28);
+  --r: 8px; --rl: 12px;
+  --f: 'DM Sans', sans-serif;
+  --m: 'DM Mono', monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--f);background:var(--bg);color:var(--t);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+
+/* SHELL */
+.shell{width:100%;max-width:1120px;border-radius:var(--rl);border:1px solid var(--b2);background:var(--bg2);overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.03);animation:fadeUp .4s ease both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;gap:10px;padding:11px 18px;border-bottom:1px solid var(--b);background:var(--bg2);}
+.logo{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--t);letter-spacing:-.2px;}
+.logo-icon{width:28px;height:28px;border-radius:7px;background:var(--blue-s);border:1px solid var(--blue-b);display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:15px;}
+.logo-badge{font-size:10px;font-weight:500;padding:2px 9px;border-radius:99px;background:var(--blue-s);color:var(--blue);border:1px solid var(--blue-b);letter-spacing:.2px;}
+.nav{display:flex;gap:2px;margin-left:12px;}
+.nav-btn{font-family:var(--f);font-size:12px;font-weight:400;padding:5px 13px;border-radius:var(--r);border:1px solid transparent;cursor:pointer;color:var(--t2);background:transparent;transition:all .15s;}
+.nav-btn:hover{color:var(--t);background:var(--bg3);}
+.nav-btn.act{color:var(--t);background:var(--bg3);border-color:var(--b2);font-weight:500;}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:12px;}
+.notif-btn{position:relative;width:30px;height:30px;border-radius:var(--r);background:var(--bg3);border:1px solid var(--b);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--t2);font-size:15px;transition:all .15s;}
+.notif-btn:hover{color:var(--t);border-color:var(--b2);}
+.notif-btn.has-alert::after{content:'';position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:var(--red);border:1.5px solid var(--bg2);}
+.company{font-size:12px;color:var(--t2);}
+.avatar{width:28px;height:28px;border-radius:50%;background:var(--amber-s);border:1px solid var(--amber-b);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--amber);letter-spacing:.3px;cursor:pointer;}
+
+/* BODY */
+.body{display:flex;height:580px;}
+
+/* SIDEBAR */
+.sidebar{width:192px;flex-shrink:0;border-right:1px solid var(--b);display:flex;flex-direction:column;overflow-y:auto;background:var(--bg2);}
+.sidebar::-webkit-scrollbar{width:3px;}.sidebar::-webkit-scrollbar-thumb{background:var(--b2);border-radius:99px;}
+.sb-hd{padding:10px 13px 5px;font-size:9px;font-weight:700;color:var(--t3);letter-spacing:1px;text-transform:uppercase;}
+.bus-item{display:flex;align-items:center;gap:9px;padding:8px 12px;border-bottom:1px solid var(--b);cursor:pointer;transition:background .12s;position:relative;}
+.bus-item::before{content:'';position:absolute;left:0;top:10px;bottom:10px;width:2px;border-radius:99px;background:transparent;transition:background .15s;}
+.bus-item:hover{background:var(--bg3);}
+.bus-item.sel{background:var(--bg3);}
+.bus-item.sel::before{background:var(--blue);}
+.bnum{width:34px;height:34px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-family:var(--m);font-size:10px;font-weight:500;flex-shrink:0;border:1px solid;}
+.bn-g{background:var(--green-s);color:var(--green);border-color:var(--green-b);}
+.bn-a{background:var(--amber-s);color:var(--amber);border-color:var(--amber-b);}
+.bn-r{background:var(--red-s);color:var(--red);border-color:var(--red-b);}
+.bn-b{background:var(--blue-s);color:var(--blue);border-color:var(--blue-b);}
+.bn-off{background:var(--bg3);color:var(--t3);border-color:var(--b);}
+.binfo{flex:1;min-width:0;}
+.bname{font-size:12px;font-weight:500;color:var(--t);}
+.bst{font-size:10px;color:var(--t2);margin-top:2px;display:flex;align-items:center;gap:4px;}
+.dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.dg{background:var(--green);box-shadow:0 0 5px rgba(46,201,138,.6);}
+.da{background:var(--amber);box-shadow:0 0 5px rgba(245,166,35,.6);}
+.dr{background:var(--red);box-shadow:0 0 5px rgba(240,79,79,.6);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.live{animation:pulse 2s infinite;}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+
+/* METRICS */
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:14px 16px;border-bottom:1px solid var(--b);}
+.mc{background:var(--bg3);border-radius:var(--r);padding:13px 14px;border:1px solid var(--b);transition:border-color .15s;}
+.mc:hover{border-color:var(--b2);}
+.mc-lbl{font-size:11px;color:var(--t2);margin-bottom:7px;display:flex;align-items:center;gap:5px;}
+.mc-val{font-size:22px;font-weight:600;color:var(--t);line-height:1;font-variant-numeric:tabular-nums;}
+.mc-val small{font-size:13px;font-weight:400;color:var(--t2);}
+.mc-d{font-size:11px;margin-top:5px;display:flex;align-items:center;gap:3px;}
+.up{color:var(--green);}.dn{color:var(--red);}
+
+/* CONTENT */
+.content{display:flex;flex:1;overflow:hidden;}
+
+/* TABLE PANEL */
+.tbl-panel{flex:1;display:flex;flex-direction:column;border-right:1px solid var(--b);min-width:0;}
+
+.tbl-hd{display:flex;align-items:center;justify-content:space-between;padding:11px 18px;border-bottom:1px solid var(--b);}
+.tbl-title{font-size:14px;font-weight:600;color:var(--t);}
+.chips{display:flex;gap:5px;}
+.chip{font-family:var(--f);font-size:12px;padding:4px 14px;border-radius:99px;border:1px solid var(--b);cursor:pointer;color:var(--t2);background:transparent;transition:all .12s;}
+.chip:hover{color:var(--t);border-color:var(--b2);}
+.chip.on{background:var(--bg4);color:var(--t);border-color:var(--b2);}
+
+/* COLUMN HEADERS */
+.tbl-col-hd{
+  display:grid;
+  grid-template-columns:60px 1fr 80px 140px 90px;
+  gap:14px;
+  padding:9px 18px;
+  border-bottom:1px solid var(--b2);
+  background:var(--bg3);
+}
+.col-h{font-size:12px;font-weight:600;color:var(--t2);letter-spacing:.3px;text-transform:uppercase;}
+
+/* TABLE ROWS */
+.tbl-body{overflow-y:auto;flex:1;}
+.tbl-body::-webkit-scrollbar{width:3px;}.tbl-body::-webkit-scrollbar-thumb{background:var(--b2);border-radius:99px;}
+
+.rt{
+  display:grid;
+  grid-template-columns:60px 1fr 80px 140px 90px;
+  align-items:center;
+  gap:14px;
+  padding:13px 18px;
+  border-bottom:1px solid var(--b);
+  cursor:pointer;
+  transition:background .12s;
+}
+.rt:hover{background:var(--bg3);}
+.rt:hover .rt-name{color:#fff;}
+
+.rt-badge{
+  width:42px;height:26px;
+  border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--m);font-size:12px;font-weight:500;
+  border:1px solid;letter-spacing:.2px;
+}
+.rt-name{font-size:14px;color:var(--t);font-weight:400;transition:color .12s;}
+.rt-buses{font-size:13px;color:var(--t2);text-align:center;}
+
+.pct-bar{height:5px;border-radius:99px;background:var(--bg4);overflow:hidden;margin-bottom:4px;}
+.pct-fill{height:100%;border-radius:99px;transition:width .5s ease;}
+.pct-lbl{font-size:11px;color:var(--t2);}
+
+.pill{font-size:11px;padding:4px 11px;border-radius:99px;font-weight:500;white-space:nowrap;border:1px solid;}
+.p-ok{background:var(--green-s);color:var(--green);border-color:var(--green-b);}
+.p-warn{background:var(--amber-s);color:var(--amber);border-color:var(--amber-b);}
+.p-late{background:var(--red-s);color:var(--red);border-color:var(--red-b);}
+
+/* CHART COL */
+.chart-col{width:210px;flex-shrink:0;padding:14px;display:flex;flex-direction:column;}
+.chart-title{font-size:13px;font-weight:600;color:var(--t);margin-bottom:13px;}
+.bars{display:flex;flex-direction:column;gap:8px;flex:1;}
+.bar-row{display:flex;align-items:center;gap:7px;}
+.bar-lbl{font-size:11px;color:var(--t3);width:28px;flex-shrink:0;font-family:var(--m);}
+.bar-track{flex:1;height:6px;border-radius:99px;background:var(--bg4);overflow:hidden;cursor:pointer;}
+.bar-fill{height:100%;border-radius:99px;transition:width .4s ease;}
+.bf-g{background:var(--green);}.bf-a{background:var(--amber);}.bf-r{background:var(--red);}
+.bar-val{font-size:11px;color:var(--t2);width:26px;text-align:right;font-family:var(--m);}
+.legend{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;}
+.leg-item{font-size:10px;color:var(--t2);display:flex;align-items:center;gap:4px;}
+.leg-dot{width:7px;height:7px;border-radius:2px;}
+
+/* DETAIL */
+.detail{border-top:1px solid var(--b);padding:12px 16px;display:flex;gap:14px;align-items:flex-start;background:var(--bg3);}
+.det-badge{width:40px;height:40px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-family:var(--m);font-size:11px;font-weight:500;flex-shrink:0;border:1px solid;transition:all .2s;}
+.det-body{flex:1;min-width:0;}
+.det-title{font-size:14px;font-weight:600;color:var(--t);letter-spacing:-.1px;}
+.det-sub{font-size:12px;color:var(--t2);margin-top:2px;}
+.det-actions{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap;}
+.det-btn{font-family:var(--f);font-size:12px;font-weight:500;padding:6px 14px;border-radius:var(--r);border:1px solid var(--b2);cursor:pointer;background:var(--bg4);color:var(--t);transition:all .12s;}
+.det-btn:hover{filter:brightness(1.2);}
+.det-btn:disabled{opacity:.4;cursor:not-allowed;}
+.det-btn-p{background:var(--blue);color:#fff;border-color:var(--blue);}
+.det-btn-p:hover{background:#5fa3f5;border-color:#5fa3f5;filter:none;}
+.kpis{display:flex;gap:8px;}
+.kpi{text-align:center;padding:8px 12px;background:var(--bg4);border-radius:var(--r);border:1px solid var(--b);min-width:66px;}
+.kpi-val{font-size:17px;font-weight:600;color:var(--t);font-variant-numeric:tabular-nums;line-height:1;}
+.kpi-val small{font-size:9px;font-weight:400;color:var(--t2);}
+.kpi-lbl{font-size:10px;color:var(--t2);margin-top:3px;}
+
+/* MODAL (alertas / historial / cambio de estado) */
+.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(5,6,10,.65);z-index:50;align-items:center;justify-content:center;animation:fadeUp .2s ease both;}
+.modal-backdrop.show{display:flex;}
+.modal-box{width:540px;max-width:92vw;max-height:80vh;overflow-y:auto;background:var(--bg2);border:1px solid var(--b2);border-radius:var(--rl);box-shadow:0 32px 80px rgba(0,0,0,.6);padding:18px 20px;}
+.modal-title{font-size:15px;font-weight:600;color:var(--t);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;}
+.modal-close{cursor:pointer;color:var(--t2);font-size:16px;background:none;border:none;}
+.alert-row{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--bg3);border:1px solid var(--b);border-radius:var(--r);padding:9px 12px;margin-bottom:8px;}
+.alert-txt{font-size:12px;color:var(--t);}
+.alert-meta{font-size:10px;color:var(--t2);margin-top:3px;}
+.mini-btn{font-family:var(--f);font-size:11px;font-weight:500;padding:5px 10px;border-radius:var(--r);border:1px solid var(--b2);cursor:pointer;background:var(--bg4);color:var(--t);}
+.mini-btn:hover{filter:brightness(1.2);}
+.hist-table{width:100%;border-collapse:collapse;font-size:11px;}
+.hist-table th{text-align:left;color:var(--t2);padding:5px 6px;border-bottom:1px solid var(--b2);font-weight:600;}
+.hist-table td{padding:5px 6px;border-bottom:1px solid var(--b);color:var(--t);font-family:var(--m);}
+.estado-opt{display:block;width:100%;text-align:left;padding:9px 12px;margin-bottom:6px;border-radius:var(--r);border:1px solid var(--b2);background:var(--bg3);color:var(--t);cursor:pointer;font-family:var(--f);font-size:13px;}
+.estado-opt:hover{background:var(--bg4);border-color:var(--blue-b);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="logo">
+      <div class="logo-icon"><i class="ti ti-bus" aria-hidden="true"></i></div>
+      LimaTrack
+      <span class="logo-badge" id="rolBadge">Operador</span>
+    </div>
+    <nav class="nav">
+      <button class="nav-btn act">Flota</button>
+      <button class="nav-btn" onclick="if(puenteJava()) puenteJava().irARutas()">Rutas</button>
+      <button class="nav-btn" onclick="mostrarReportes()">Reportes</button>
+      <button class="nav-btn" onclick="abrirAlertas()">Alertas</button>
+    </nav>
+    <div class="topbar-right">
+      <div class="notif-btn" id="notifBtn" onclick="abrirAlertas()"><i class="ti ti-bell" aria-hidden="true"></i></div>
+      <span class="company" id="companyName">—</span>
+      <div class="avatar" id="avatar" title="Cerrar sesión" onclick="cerrarSesion()">--</div>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="body">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sb-hd" style="display:flex;align-items:center;justify-content:space-between;">
+        <span>Activas</span>
+        <button onclick="abrirCrearBus()" title="Agregar bus" style="background:var(--bg4);border:1px solid var(--b2);color:var(--t2);border-radius:6px;width:20px;height:20px;cursor:pointer;font-size:13px;line-height:1;">+</button>
+      </div>
+      <div id="listaActivas"></div>
+      <div class="sb-hd" style="margin-top:6px;">Inactivas</div>
+      <div id="listaInactivas"></div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+      <!-- METRICS -->
+      <div class="metrics">
+        <div class="mc">
+          <div class="mc-lbl"><i class="ti ti-bus" style="font-size:13px" aria-hidden="true"></i> Unidades activas</div>
+          <div class="mc-val" id="mUnidades">—</div>
+        </div>
+        <div class="mc">
+          <div class="mc-lbl"><i class="ti ti-route" style="font-size:13px" aria-hidden="true"></i> Cumplimiento</div>
+          <div class="mc-val" id="mCumplimiento">—</div>
+        </div>
+        <div class="mc">
+          <div class="mc-lbl"><i class="ti ti-users" style="font-size:13px" aria-hidden="true"></i> Pasajeros hoy</div>
+          <div class="mc-val" id="mPasajeros">—</div>
+        </div>
+        <div class="mc">
+          <div class="mc-lbl"><i class="ti ti-clock" style="font-size:13px" aria-hidden="true"></i> ETA promedio</div>
+          <div class="mc-val" id="mEta">—</div>
+        </div>
+      </div>
+
+      <!-- CONTENT -->
+      <div class="content">
+
+        <!-- TABLE -->
+        <div class="tbl-panel">
+          <div class="tbl-hd">
+            <span class="tbl-title">Estado por ruta</span>
+            <div class="chips">
+              <button class="chip on" onclick="filt(this,'todas')">Todas</button>
+              <button class="chip" onclick="filt(this,'atiempo')">A tiempo</button>
+              <button class="chip" onclick="filt(this,'demoras')">Demoras</button>
+              <button class="chip" onclick="abrirCrearRuta()" title="Agregar ruta" style="font-weight:700;">+ Ruta</button>
+            </div>
+          </div>
+
+          <div class="tbl-col-hd">
+            <div class="col-h">Ruta</div>
+            <div class="col-h">Nombre</div>
+            <div class="col-h" style="text-align:center">Buses</div>
+            <div class="col-h">Cumplimiento</div>
+            <div class="col-h" style="text-align:right">Estado</div>
+          </div>
+
+          <div class="tbl-body" id="tblRutas"></div>
+        </div>
+
+        <!-- CHART -->
+        <div class="chart-col">
+          <div class="chart-title">Demanda por hora</div>
+          <div class="bars" id="barsDemanda"></div>
+          <div class="legend">
+            <span class="leg-item"><span class="leg-dot" style="background:var(--green)"></span>Normal</span>
+            <span class="leg-item"><span class="leg-dot" style="background:var(--amber)"></span>Saturado</span>
+            <span class="leg-item"><span class="leg-dot" style="background:var(--red)"></span>Pico</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- DETAIL -->
+      <div class="detail">
+        <div class="det-badge bn-a" id="dBadge">—</div>
+        <div class="det-body">
+          <div class="det-title" id="dTitle">Selecciona un bus de la flota</div>
+          <div class="det-sub" id="dSub"> </div>
+          <div class="det-actions">
+            <button class="det-btn det-btn-p" id="btnActivar" style="display:none;background:var(--green);border-color:var(--green);color:#0b1a13;" onclick="abrirActivarBus()">Activar unidad ↗</button>
+            <button class="det-btn det-btn-p" id="btnCambiarEstado" onclick="abrirCambiarEstado()">Cambiar estado ↗</button>
+            <button class="det-btn" id="btnNotificar" onclick="notificarConductor()">Notificar conductor</button>
+            <button class="det-btn" id="btnHistorial" onclick="abrirHistorial()">Ver historial</button>
+            <button class="det-btn" id="btnDesactivar" onclick="abrirDesactivarBus()">Retirar de circulación</button>
+          </div>
+        </div>
+        <div class="kpis">
+          <div class="kpi"><div class="kpi-val" id="kC">—</div><div class="kpi-lbl">Confianza ML</div></div>
+          <div class="kpi"><div class="kpi-val" id="kV">—</div><div class="kpi-lbl">Velocidad</div></div>
+          <div class="kpi"><div class="kpi-val" id="kO">—</div><div class="kpi-lbl">Ocupación</div></div>
+          <div class="kpi"><div class="kpi-val" id="kKm">—</div><div class="kpi-lbl">Km recorridos</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL genérico -->
+<div class="modal-backdrop" id="modalBackdrop" onclick="if(event.target===this) cerrarModal()">
+  <div class="modal-box">
+    <div class="modal-title"><span id="modalTitulo">—</span><button class="modal-close" onclick="cerrarModal()">✕</button></div>
+    <div id="modalContenido"></div>
+  </div>
+</div>
+
+<script>
+const CM = {
+  A_TIEMPO:{cls:'bn-g', dot:'dg', color:'var(--green)'},
+  DEMORADO:{cls:'bn-a', dot:'da', color:'var(--amber)'},
+  DESVIO:{cls:'bn-r', dot:'dr', color:'var(--red)'},
+  MANTENIMIENTO:{cls:'bn-off', dot:'', color:'var(--t3)'},
+  SIN_CONDUCTOR:{cls:'bn-off', dot:'', color:'var(--t3)'},
+  INACTIVO:{cls:'bn-off', dot:'', color:'var(--t3)'}
+};
+
+let buses = [];
+let rutas = [];
+let busSeleccionado = null;
+let filtroActual = 'todas';
+
+function puenteJava() { return window.app; }
+
+// ------------------------------------------------------------------
+// CARGA INICIAL — espera activamente a que Java inyecte window.app
+// (evita el problema de que la página cargue más rápido que el puente Java)
+// ------------------------------------------------------------------
+let intentosEspera = 0;
+window.addEventListener('load', () => { esperarAppYcargar(); });
+setInterval(cargarTodo, 15000);
+
+function esperarAppYcargar() {
+  intentosEspera++;
+  if (window.app) {
+    mostrarError(null);
+    cargarTodo();
+    return;
+  }
+  if (intentosEspera > 100) { // ~10 segundos
+    mostrarError('No se pudo conectar con la aplicación Java (window.app nunca apareció). Revisa la pestaña "Output" de NetBeans por errores en rojo.');
+    return;
+  }
+  setTimeout(esperarAppYcargar, 100);
+}
+
+function mostrarError(msg) {
+  let banner = document.getElementById('errorBanner');
+  if (!msg) { if (banner) banner.remove(); return; }
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'errorBanner';
+    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#f04f4f;color:#fff;font-size:12px;padding:8px 16px;z-index:999;font-family:sans-serif;';
+    document.body.prepend(banner);
+  }
+  banner.textContent = '⚠ ' + msg;
+}
+
+function cargarTodo() {
+  if (!puenteJava()) { esperarAppYcargar(); return; }
+  let sesion;
+  try {
+    sesion = JSON.parse(puenteJava().usuarioActualJson());
+  } catch (e) {
+    mostrarError('Error leyendo la sesión desde Java: ' + e.message);
+    return;
+  }
+  if (!sesion.ok) {
+    mostrarError('No hay sesión activa (usuarioActual es null en AppBridge). Vuelve a iniciar sesión.');
+    return;
+  }
+  mostrarError(null);
+  const u = sesion.usuario;
+  document.getElementById('rolBadge').textContent = u.rolLegible;
+  document.getElementById('companyName').textContent = u.nombreEmpresa;
+  document.getElementById('avatar').textContent = u.iniciales;
+
+  try {
+    buses = JSON.parse(puenteJava().listarBuses());
+    rutas = JSON.parse(puenteJava().listarRutas());
+    const metricas = JSON.parse(puenteJava().obtenerMetricas());
+    const demanda = JSON.parse(puenteJava().listarDemanda());
+    const alertas = puenteJava().contarAlertasPendientes();
+
+    renderSidebar();
+    renderMetricas(metricas);
+    renderTablaRutas();
+    renderGrafico(demanda);
+    renderNotif(alertas);
+
+    if (!busSeleccionado && buses.length) busSeleccionado = buses[0];
+    if (busSeleccionado) {
+      const actualizado = buses.find(b => b.idBus === busSeleccionado.idBus);
+      if (actualizado) busSeleccionado = actualizado;
+    }
+    if (buses.length) renderDetalle();
+    if (!buses.length) mostrarError('La consulta a la base de datos no devolvió buses para tu empresa (id_empresa=' + u.idEmpresa + '). Revisa que existan filas en la tabla "buses" con ese id_empresa.');
+  } catch (e) {
+    mostrarError('Error cargando datos desde MySQL: ' + e.message);
+  }
+}
+
+// ------------------------------------------------------------------
+// SIDEBAR
+// ------------------------------------------------------------------
+function renderSidebar() {
+  const activas = document.getElementById('listaActivas');
+  const inactivas = document.getElementById('listaInactivas');
+  activas.innerHTML = '';
+  inactivas.innerHTML = '';
+
+  buses.forEach(b => {
+    const meta = CM[b.estado] || CM.A_TIEMPO;
+    const div = document.createElement('div');
+    div.className = 'bus-item' + (busSeleccionado && busSeleccionado.idBus === b.idBus ? ' sel' : '');
+    if (!b.activo) div.style.opacity = '.6';
+    div.innerHTML = `
+      <div class="bnum ${meta.cls}">${b.codigo}</div>
+      <div class="binfo">
+        <div class="bname">Unidad ${b.codigo.replace('B-','')}</div>
+        <div class="bst"><span class="dot ${meta.dot}${b.estado==='DEMORADO'||b.estado==='DESVIO'?' live':''}"></span>${b.estadoLegible}</div>
+      </div>`;
+    div.onclick = () => { busSeleccionado = b; renderSidebar(); renderDetalle(); };
+    if (b.activo) {
+      activas.appendChild(div);
+    } else {
+      inactivas.appendChild(div);
+    }
+  });
+}
+
+// ------------------------------------------------------------------
+// MÉTRICAS
+// ------------------------------------------------------------------
+function renderMetricas(m) {
+  document.getElementById('mUnidades').innerHTML = `${m.unidadesActivas} <small>/ ${m.unidadesTotales}</small>`;
+  document.getElementById('mCumplimiento').innerHTML = `${Math.round(m.cumplimientoPct)} <small>%</small>`;
+  document.getElementById('mPasajeros').textContent = (m.pasajerosTotales||0).toLocaleString('es-PE');
+  document.getElementById('mEta').innerHTML = `${m.etaPromedioMin} <small>min</small>`;
+}
+
+// ------------------------------------------------------------------
+// TABLA DE RUTAS
+// ------------------------------------------------------------------
+function renderTablaRutas() {
+  const cont = document.getElementById('tblRutas');
+  cont.innerHTML = '';
+  let lista = rutas;
+  if (filtroActual === 'atiempo') lista = rutas.filter(r => r.estadoGeneral === 'Normal');
+  if (filtroActual === 'demoras') lista = rutas.filter(r => r.estadoGeneral !== 'Normal');
+
+  lista.forEach(r => {
+    const pillClass = r.estadoGeneral === 'Normal' ? 'p-ok' : (r.estadoGeneral === 'Demorada' ? 'p-warn' : 'p-late');
+    const barColor = r.cumplimientoPct >= 85 ? 'var(--green)' : (r.cumplimientoPct >= 70 ? 'var(--amber)' : 'var(--red)');
+    const badgeColor = r.estadoGeneral === 'Normal' ? 'var(--green)' : (r.estadoGeneral === 'Demorada' ? 'var(--amber)' : 'var(--red)');
+    const row = document.createElement('div');
+    row.className = 'rt';
+    row.innerHTML = `
+      <div class="rt-badge" style="background:${badgeColor}22;color:${badgeColor};border-color:${badgeColor}55">${r.codigo}</div>
+      <div class="rt-name">${r.nombre} (${r.origen} → ${r.destino})</div>
+      <div class="rt-buses">${r.totalBuses} ${r.totalBuses===1?'bus':'buses'}</div>
+      <div>
+        <div class="pct-bar"><div class="pct-fill" style="width:${r.cumplimientoPct}%;background:${barColor}"></div></div>
+        <div class="pct-lbl">${r.cumplimientoPct}% cumplimiento</div>
+      </div>
+      <div style="text-align:right"><span class="pill ${pillClass}">${r.estadoGeneral}</span></div>`;
+    cont.appendChild(row);
+  });
+}
+
+function filt(btn, tipo) {
+  document.querySelectorAll('.chip').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  filtroActual = tipo;
+  renderTablaRutas();
+}
+
+// ------------------------------------------------------------------
+// GRÁFICO DE DEMANDA
+// ------------------------------------------------------------------
+function renderGrafico(demanda) {
+  const cont = document.getElementById('barsDemanda');
+  cont.innerHTML = '';
+  if (!demanda.length) { cont.innerHTML = '<div style="font-size:11px;color:var(--t3)">Sin datos de demanda hoy</div>'; return; }
+  const max = Math.max(...demanda.map(d => d.pasajeros));
+  demanda.forEach(d => {
+    const pct = Math.round((d.pasajeros / max) * 100);
+    const cls = d.nivel === 'PICO' ? 'bf-r' : (d.nivel === 'SATURADO' ? 'bf-a' : 'bf-g');
+    const row = document.createElement('div');
+    row.className = 'bar-row';
+    row.innerHTML = `<span class="bar-lbl">${d.etiquetaHora}</span><div class="bar-track"><div class="bar-fill ${cls}" style="width:${pct}%"></div></div><span class="bar-val">${d.pasajeros}</span>`;
+    cont.appendChild(row);
+  });
+}
+
+// ------------------------------------------------------------------
+// NOTIFICACIONES
+// ------------------------------------------------------------------
+function renderNotif(count) {
+  const btn = document.getElementById('notifBtn');
+  btn.classList.toggle('has-alert', count > 0);
+}
+
+// ------------------------------------------------------------------
+// DETALLE DEL BUS SELECCIONADO
+// ------------------------------------------------------------------
+function renderDetalle() {
+  if (!busSeleccionado) return;
+  const b = busSeleccionado;
+  const meta = CM[b.estado] || CM.A_TIEMPO;
+  const badge = document.getElementById('dBadge');
+  badge.textContent = b.codigo;
+  badge.className = 'det-badge ' + meta.cls;
+
+  document.getElementById('dTitle').textContent = 'Unidad ' + b.codigo.replace('B-','') +
+    (b.codigoRuta ? ' — Ruta ' + b.codigoRuta : ' — Sin ruta asignada');
+
+  let sub = b.estadoLegible;
+  if (b.ubicacion) sub += ' · ' + b.ubicacion;
+  if (b.retrasoMin > 0) sub += ' · ' + b.retrasoMin + ' min de retraso';
+  if (b.conductor) sub += ' · Conductor: ' + b.conductor;
+  document.getElementById('dSub').textContent = sub;
+
+  document.getElementById('kC').innerHTML = b.confianzaMl + '<small>%</small>';
+  document.getElementById('kV').innerHTML = Math.round(b.velocidad) + '<small> km/h</small>';
+  document.getElementById('kO').innerHTML = b.ocupacion + '<small>%</small>';
+  document.getElementById('kKm').innerHTML = '—';
+  try {
+    const km = puenteJava().kmRecorridos(b.idBus);
+    document.getElementById('kKm').innerHTML = km + '<small> km</small>';
+  } catch (e) { /* sin datos aun */ }
+
+  document.getElementById('btnNotificar').disabled = !(b.activo && b.conductor);
+  document.getElementById('btnActivar').style.display = b.activo ? 'none' : '';
+  document.getElementById('btnCambiarEstado').style.display = b.activo ? '' : 'none';
+  document.getElementById('btnDesactivar').style.display = b.activo ? '' : 'none';
+}
+
+// ------------------------------------------------------------------
+// ACCIONES
+// ------------------------------------------------------------------
+function notificarConductor() {
+  if (!busSeleccionado || !busSeleccionado.conductor) return;
+  abrirModal('Notificación enviada', `<p style="font-size:13px;color:var(--t2)">Se envió una notificación push al conductor <b style="color:var(--t)">${busSeleccionado.conductor}</b> de la unidad <b style="color:var(--t)">${busSeleccionado.codigo}</b>.</p>`);
+}
+
+function abrirHistorial() {
+  if (!busSeleccionado) return;
+  const historial = JSON.parse(puenteJava().historialBus(busSeleccionado.idBus));
+  let filas = historial.map(p => `<tr><td>${p.fecha}</td><td>${p.latitud.toFixed(4)}</td><td>${p.longitud.toFixed(4)}</td><td>${p.velocidad} km/h</td><td>${p.ocupacion}%</td></tr>`).join('');
+  if (!filas) filas = '<tr><td colspan="5" style="color:var(--t3)">Sin registros aún</td></tr>';
+  abrirModal('Historial GPS — ' + busSeleccionado.codigo, `
+    <table class="hist-table">
+      <thead><tr><th>Fecha/hora</th><th>Lat</th><th>Lon</th><th>Vel.</th><th>Ocup.</th></tr></thead>
+      <tbody>${filas}</tbody>
+    </table>`);
+}
+
+function abrirCambiarEstado() {
+  if (!busSeleccionado) return;
+  const opciones = [
+    ['A_TIEMPO','A tiempo'], ['DEMORADO','Demorado'], ['DESVIO','Desvío'],
+    ['MANTENIMIENTO','Mantenimiento'], ['SIN_CONDUCTOR','Sin conductor'], ['INACTIVO','Inactivo']
+  ];
+  const html = opciones.map(o => `<button class="estado-opt" onclick="aplicarCambioEstado('${o[0]}')">${o[1]}</button>`).join('');
+  abrirModal('Cambiar estado — ' + busSeleccionado.codigo, html);
+}
+
+function aplicarCambioEstado(estado) {
+  const ok = puenteJava().cambiarEstadoBus(busSeleccionado.idBus, estado);
+  cerrarModal();
+  if (ok) cargarTodo();
+}
+
+// ------------------------------------------------------------------
+// AGREGAR BUS NUEVO
+// ------------------------------------------------------------------
+function abrirCrearBus() {
+  const html = `
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <input id="nb-codigo" placeholder="Código (ej. B-900)" style="padding:8px 10px;background:var(--bg3);border:1px solid var(--b2);border-radius:var(--r);color:var(--t);font-family:var(--f);font-size:13px;">
+      <input id="nb-placa" placeholder="Placa (ej. XYZ-900)" style="padding:8px 10px;background:var(--bg3);border:1px solid var(--b2);border-radius:var(--r);color:var(--t);font-family:var(--f);font-size:13px;">
+      <input id="nb-modelo" placeholder="Modelo (ej. Volvo B270F)" style="padding:8px 10px;background:var(--bg3);border:1px solid var(--b2);border-radius:var(--r);color:var(--t);font-family:var(--f);font-size:13px;">
+      <div style="display:flex;gap:8px;">
+        <input id="nb-anio" type="number" placeholder="Año" value="2024" style="flex:1;padding:8px 10px;background:var(--bg3);border:1px solid var(--b2);border-radius:var(--r);color:var(--t);font-family:var(--f);font-size:13px;">
+        <input id="nb-capacidad" type="number" placeholder="Capacidad" value="50" style="flex:1;padding:8px 10px;background:var(--bg3);border:1px solid var(--b2);border-radius:var(--r);color:var(--t);font-family:var(--f);font-size:13px;">
+      </div>
+      <div id="nb-error" style="display:none;color:var(--red);font-size:11px;"></div>
+      <button class="det-btn det-btn-p" style="margin-top:4px;" onclick="guardarBusNuevo()">Guardar bus</button>
+      <div style="font-size:10px;color:var(--t3);">El bus se crea como "Inactivo"; después podrás activarlo y asignarle una ruta desde la lista de la izquierda.</div>
+    </div>`;
+  abrirModal('Agregar bus nuevo', html);
+}
+
+function guardarBusNuevo() {
+  const codigo = document.getElementById('nb-codigo').value.trim();
+  const placa = document.getElementById('nb-placa').value.trim();
+  const modelo = document.getElementById('nb-modelo').value.trim();
+  const anio = parseInt(document.getElementById('nb-anio').value, 10) || 2024;
+  const capacidad = parseInt(document.getElementById('nb-capacidad').value, 10) || 50;
+  const errEl = document.getElementById('nb-error');
+
+  if (!codigo || !placa) {
+    errEl.textContent = 'El código y la placa son obligatorios.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const respuesta = JSON.parse(puenteJava().crearBus(codigo, placa, modelo, anio, capacidad));
+  if (respuesta.ok) {
+    cerrarModal();
+    cargarTodo();
+  } else {
+    errEl.textContent = respuesta.mensaje || 'No se pudo guardar el bus.';
+    errEl.style.display = 'block';
+  }
+}
+
+// ------------------------------------------------------------------
+// ACTIVAR / DESACTIVAR UNIDAD
+// ------------------------------------------------------------------
+// ------------------------------------------------------------------
+// AGREGAR RUTA NUEVA
+// ------------------------------------------------------------------
+function abrirCrearRuta() {
+  const html = `
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <input id="nr-codigo" placeholder="Código (ej. L13)" style="padding:8px 10px;background:var(--bg3);border:1px solid var(--b2);border-radius:var(--r);color:var(--t);font-family:var(--f);font-size:13px;">
+      <input id="nr-origen" placeholder="Origen (ej. Miraflores)" style="padding:8px 10px;background:var(--bg3);border:1px solid var(--b2);border-radius:var(--r);color:var(--t);font-family:var(--f);font-size:13px;">
+      <input id="nr-destino" placeholder="Destino (ej. San Isidro)" style="padding:8px 10px;background:var(--bg3);border:1px solid var(--b2);border-radius:var(--r);color:var(--t);font-family:var(--f);font-size:13px;">
+      <div style="display:flex;gap:8px;">
+        <input id="nr-distancia" type="number" step="0.1" placeholder="Distancia (km)" value="15" style="flex:1;padding:8px 10px;background:var(--bg3);border:1px solid var(--b2);border-radius:var(--r);color:var(--t);font-family:var(--f);font-size:13px;">
+        <input id="nr-tiempo" type="number" placeholder="Tiempo (min)" value="40" style="flex:1;padding:8px 10px;background:var(--bg3);border:1px solid var(--b2);border-radius:var(--r);color:var(--t);font-family:var(--f);font-size:13px;">
+        <input id="nr-tarifa" type="number" step="0.10" placeholder="Tarifa S/" value="2.50" style="flex:1;padding:8px 10px;background:var(--bg3);border:1px solid var(--b2);border-radius:var(--r);color:var(--t);font-family:var(--f);font-size:13px;">
+      </div>
+      <div id="nr-error" style="display:none;color:var(--red);font-size:11px;"></div>
+      <button class="det-btn det-btn-p" style="margin-top:4px;" onclick="guardarRutaNueva()">Guardar ruta</button>
+    </div>`;
+  abrirModal('Agregar ruta nueva', html);
+}
+
+function guardarRutaNueva() {
+  const codigo = document.getElementById('nr-codigo').value.trim();
+  const origen = document.getElementById('nr-origen').value.trim();
+  const destino = document.getElementById('nr-destino').value.trim();
+  const distancia = parseFloat(document.getElementById('nr-distancia').value) || 10;
+  const tiempo = parseInt(document.getElementById('nr-tiempo').value, 10) || 30;
+  const tarifa = parseFloat(document.getElementById('nr-tarifa').value) || 2.5;
+  const errEl = document.getElementById('nr-error');
+
+  if (!codigo || !origen || !destino) {
+    errEl.textContent = 'El código, origen y destino son obligatorios.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const respuesta = JSON.parse(puenteJava().crearRuta(codigo, '', origen, destino, distancia, tiempo, tarifa));
+  if (respuesta.ok) {
+    cerrarModal();
+    cargarTodo();
+  } else {
+    errEl.textContent = respuesta.mensaje || 'No se pudo guardar la ruta.';
+    errEl.style.display = 'block';
+  }
+}
+
+function abrirActivarBus() {
+  if (!busSeleccionado) return;
+  if (!rutas.length) {
+    abrirModal('Activar unidad', '<p style="font-size:13px;color:var(--t2)">No hay rutas registradas todavía para asignar. Crea una ruta en la base de datos primero.</p>');
+    return;
+  }
+  const opciones = rutas.map(r =>
+    `<button class="estado-opt" onclick="confirmarActivarBus(${r.idRuta})">${r.codigo} — ${r.origen} → ${r.destino}</button>`
+  ).join('');
+  abrirModal('Activar unidad ' + busSeleccionado.codigo + ' — elige su ruta', opciones);
+}
+
+function confirmarActivarBus(idRuta) {
+  const ok = puenteJava().activarUnidad(busSeleccionado.idBus, idRuta);
+  cerrarModal();
+  if (ok) cargarTodo();
+}
+
+function abrirDesactivarBus() {
+  if (!busSeleccionado) return;
+  const opciones = [
+    ['MANTENIMIENTO', 'Enviar a mantenimiento'],
+    ['SIN_CONDUCTOR', 'Sin conductor disponible'],
+    ['INACTIVO', 'Inactivo (otro motivo)']
+  ];
+  const html = opciones.map(o => `<button class="estado-opt" onclick="confirmarDesactivarBus('${o[0]}')">${o[1]}</button>`).join('');
+  abrirModal('Retirar de circulación — ' + busSeleccionado.codigo, html);
+}
+
+function confirmarDesactivarBus(motivo) {
+  const ok = puenteJava().desactivarUnidad(busSeleccionado.idBus, motivo);
+  cerrarModal();
+  if (ok) cargarTodo();
+}
+
+function abrirAlertas() {
+  const alertas = JSON.parse(puenteJava().listarAlertasPendientes());
+  let html = '';
+  if (!alertas.length) {
+    html = '<p style="font-size:13px;color:var(--t2)">No hay alertas pendientes ✔</p>';
+  } else {
+    html = alertas.map(a => `
+      <div class="alert-row">
+        <div>
+          <div class="alert-txt"><b>${a.codigoBus}</b> — ${a.descripcion}</div>
+          <div class="alert-meta">${a.fecha} · ${a.severidad}</div>
+        </div>
+        <button class="mini-btn" onclick="atenderAlerta(${a.idAlerta})">Atender</button>
+      </div>`).join('');
+  }
+  abrirModal('Alertas pendientes', html);
+}
+
+function atenderAlerta(id) {
+  puenteJava().marcarAlertaAtendida(id);
+  abrirAlertas();
+  cargarTodo();
+}
+
+function cerrarSesion() {
+  if (puenteJava()) puenteJava().cerrarSesion();
+}
+
+function mostrarReportes() {
+  let r;
+  try {
+    r = JSON.parse(puenteJava().generarReporte());
+  } catch (e) {
+    abrirModal('Reportes', '<p style="font-size:13px;color:var(--red)">No se pudo generar el reporte: ' + e.message + '</p>');
+    return;
+  }
+  if (!r.ok) {
+    abrirModal('Reportes', '<p style="font-size:13px;color:var(--t2)">' + (r.mensaje || 'No hay datos disponibles todavía.') + '</p>');
+    return;
+  }
+
+  const filaCump = r.rutas.map(ruta => {
+    const color = ruta.cumplimientoPct >= 85 ? 'var(--green)' : (ruta.cumplimientoPct >= 70 ? 'var(--amber)' : 'var(--red)');
+    return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+      <span style="width:36px;font-size:11px;color:var(--t2);font-family:var(--m);">${ruta.codigo}</span>
+      <div style="flex:1;height:6px;background:var(--bg4);border-radius:99px;overflow:hidden;">
+        <div style="width:${ruta.cumplimientoPct}%;height:100%;background:${color};"></div>
+      </div>
+      <span style="width:34px;text-align:right;font-size:11px;color:var(--t2);">${ruta.cumplimientoPct}%</span>
+    </div>`;
+  }).join('');
+
+  const listaRetraso = r.topRetraso.length
+    ? r.topRetraso.map(b => `<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--t);padding:4px 0;border-bottom:1px solid var(--b);"><span>${b.codigo} ${b.ruta ? '· Ruta ' + b.ruta : ''}</span><span style="color:var(--amber);font-weight:600;">${b.retrasoMin} min</span></div>`).join('')
+    : '<div style="font-size:12px;color:var(--t3);">Sin retrasos registrados</div>';
+
+  const listaKm = r.topKm.length
+    ? r.topKm.map(b => `<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--t);padding:4px 0;border-bottom:1px solid var(--b);"><span>${b.codigo}</span><span style="color:var(--blue);font-weight:600;">${b.km} km</span></div>`).join('')
+    : '<div style="font-size:12px;color:var(--t3);">Sin historial GPS todavía</div>';
+
+  const html = `
+    <div style="display:flex;gap:10px;margin-bottom:14px;">
+      <div style="flex:1;background:var(--bg3);border:1px solid var(--b);border-radius:8px;padding:10px;text-align:center;">
+        <div style="font-size:20px;font-weight:700;color:var(--t);">${r.pasajerosTotales.toLocaleString('es-PE')}</div>
+        <div style="font-size:10px;color:var(--t2);">Pasajeros hoy</div>
+      </div>
+      <div style="flex:1;background:var(--bg3);border:1px solid var(--b);border-radius:8px;padding:10px;text-align:center;">
+        <div style="font-size:20px;font-weight:700;color:var(--t);">${Math.round(r.cumplimientoGeneral)}%</div>
+        <div style="font-size:10px;color:var(--t2);">Cumplimiento general</div>
+      </div>
+      <div style="flex:1;background:var(--bg3);border:1px solid var(--b);border-radius:8px;padding:10px;text-align:center;">
+        <div style="font-size:15px;font-weight:700;color:var(--red);">${r.alertasAltas}</div>
+        <div style="font-size:9px;color:var(--t2);">Alertas altas</div>
+        <div style="font-size:10px;color:var(--t3);margin-top:2px;">${r.alertasMedias} medias · ${r.alertasBajas} bajas</div>
+      </div>
+    </div>
+
+    <div style="font-size:12px;font-weight:600;color:var(--t);margin-bottom:8px;">Cumplimiento por ruta</div>
+    <div style="margin-bottom:16px;">${filaCump || '<div style="font-size:12px;color:var(--t3)">Sin rutas registradas</div>'}</div>
+
+    <div style="display:flex;gap:16px;">
+      <div style="flex:1;">
+        <div style="font-size:12px;font-weight:600;color:var(--t);margin-bottom:8px;">Top unidades con más retraso</div>
+        ${listaRetraso}
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:12px;font-weight:600;color:var(--t);margin-bottom:8px;">Top unidades por km recorridos</div>
+        ${listaKm}
+      </div>
+    </div>`;
+
+  abrirModal('Reportes — ' + new Date().toLocaleDateString('es-PE'), html);
+}
+
+// ------------------------------------------------------------------
+// MODAL genérico
+// ------------------------------------------------------------------
+function abrirModal(titulo, html) {
+  document.getElementById('modalTitulo').textContent = titulo;
+  document.getElementById('modalContenido').innerHTML = html;
+  document.getElementById('modalBackdrop').classList.add('show');
+}
+function cerrarModal() {
+  document.getElementById('modalBackdrop').classList.remove('show');
+}
+</script>
+</body>
+</html>

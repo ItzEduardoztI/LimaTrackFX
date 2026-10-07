@@ -82,7 +82,7 @@ Como es un proyecto distinto, este paso hay que repetirlo aquí:
 1. Abre `Source Packages → limatrack.db → Conexion.java`.
 2. Cambia:
    ```java
-   private static final String PASSWORD = "root"; // <-- tu contraseña real de MySQL
+   private static final String PASSWORD = "root"; // <-- tu contraseña de MySQL
    ```
 3. Guarda (`Ctrl+S`).
 
